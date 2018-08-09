@@ -20,7 +20,7 @@ x_test = []
 for img_path in os.listdir("images"):
     if img_path.endswith(".jpg"):
         img = image.load_img("images/" + img_path, target_size=(224, 224))
-        y_test.append(img_path[0:2])
+        y_test.append(int(img_path[0:2]))
         x = image.img_to_array(img)
         x = np.expand_dims(x, axis=0)
         if len(x_test) > 0:
@@ -43,8 +43,8 @@ features_compress = features.reshape(len(y_test), 7 * 7 * 512)
 # compute consine similarity
 cos_sim = cosine_similarity(features_compress)
 
-# 隨機取5個樣本測試
-inputNos = np.random.randint(0, len(y_test), 5)
+# random sampling 5 to test
+inputNos = np.random.choice(len(y_test), 5, replace=False)
 
 for inputNo in inputNos:
     top = np.argsort(-cos_sim[inputNo], axis=0)[1:3]
