@@ -59,6 +59,7 @@ def train(model, optimizer, epoch, train_loader, log_interval):
         output = model(data)
 
         # Calculate negative log likelihood loss
+        # if model's last layer is log_softmax, add nll_loss; otherwise, add CrossEntropyLoss
         loss = F.nll_loss(output, target)
 
         # Backward propagation
@@ -93,14 +94,14 @@ def test(model, epoch, test_loader):
             test_loss += F.nll_loss(output, target, reduction='sum').data.item()
 
             # Get the index of the max log-probability (the predicted output label)
-            # pred = output.data.argmax(1)
-            pred = np.argmax(output.data, axis=1)
+            pred = output.data.argmax(1)
+            # pred = np.argmax(output.data, axis=1)
 
             # If correct, increment correct prediction accumulator
-            # correct += pred.eq(target.data).sum()
-            correct = correct + np.equal(pred, target.data).sum()
+            correct += pred.eq(target.data).sum()
+            # correct = correct + np.equal(pred, target.data).sum()
 
-            # Print log
+    # Print log
     test_loss /= len(test_loader.dataset)
     print('\nTest set, Epoch {} , Average loss: {:.4f}, Accuracy: {}/{} ({:.0f}%)\n'.format(epoch,
         test_loss, correct, len(test_loader.dataset),
